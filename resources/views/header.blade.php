@@ -58,13 +58,24 @@
                     </button>
                     <div class="collapse navbar-collapse bg-white mt-3" id="navbarCollapse">
                         <div class="navbar-nav mx-auto">
-                            <a href="" class="nav-item nav-link">Home</a>
+                            <a href="{{route('dashboard')}}" class="nav-item nav-link">Home</a>
                             <a href="" class="nav-item nav-link">Cart</a>
                             <a href="" class="nav-item nav-link">Orders</a>
                             
 
                             {{-- <a href="shop-detail.html" class="nav-item nav-link">Shop Detail</a> --}}
-                            
+                            @auth
+                            @if (auth()->user()->role == 2)
+                           <div class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Admin Pages</a>
+                                <div class="dropdown-menu m-0 bg-secondary rounded-0">
+                                <a href="{{route('user.index')}}" class=" dropdown-item">Search User</a>
+                                    
+                                    <a href="{{route('items.index')}}" class="dropdown-item">Manage Items</a>
+                                </div>
+                            </div> 
+                            @endif
+                            @endauth
                             
                         </div>
                          <button class="btn-search btn border border-secondary btn-md-square rounded-circle bg-white me-4" data-bs-toggle="modal" data-bs-target="#searchModal"><i class="fas fa-search text-primary"></i></button>
@@ -76,7 +87,7 @@
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="accountDropdown">
                                 <li>
-                                    <a class="dropdown-item" href="">
+                                    <a class="dropdown-item" href="{{ route('profile.show') }}">
                                         {{ __('Profile') }}
                                     </a>
                                 </li>
