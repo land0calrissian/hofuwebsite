@@ -59,8 +59,8 @@
                     <div class="collapse navbar-collapse bg-white mt-3" id="navbarCollapse">
                         <div class="navbar-nav mx-auto">
                             <a href="{{route('dashboard')}}" class="nav-item nav-link">Home</a>
-                            <a href="" class="nav-item nav-link">Cart</a>
-                            <a href="" class="nav-item nav-link">Orders</a>
+                            <a href="{{route('cart.index')}}" class="nav-item nav-link">Cart</a>
+                            <a href="{{route('order.index')}}" class="nav-item nav-link">Orders</a>
                             
 
                             {{-- <a href="shop-detail.html" class="nav-item nav-link">Shop Detail</a> --}}

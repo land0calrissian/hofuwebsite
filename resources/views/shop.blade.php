@@ -79,7 +79,9 @@
                                                     <p>{{ $item->description }}</p>
                                                     <div class="d-flex justify-content-between flex-lg-wrap mt-auto">
                                                         <p class="text-dark fs-5 fw-bold mb-0">Rp{{ number_format($item->price, 0, ',', '.') }}</p>
-                                                       
+                                                       <button type="button" class="btn border border-secondary rounded-pill px-3 text-primary mt-1" data-toggle="modal" data-target="#addToCartModal-{{ $item->id }}">
+                                                            <i class="fa fa-shopping-bag me-2 text-primary"></i> Add to cart
+                                                        </button>
                                                         {{-- <a href="#" class="btn border border-secondary rounded-pill px-3 text-primary"><i class="fa fa-shopping-bag me-2 text-primary"></i> Add to cart</a> --}}
                                                     </div>
                                                 </div>
@@ -107,7 +109,34 @@
         <a href="#" class="btn btn-primary border-3 border-primary rounded-circle back-to-top"><i class="fa fa-arrow-up"></i></a>   
 
 {{-- modal --}}
-
+@foreach ($items as $item)
+<div class="modal fade" id="addToCartModal-{{ $item->id }}" tabindex="-1" role="dialog" aria-labelledby="addToCartModalLabel-{{ $item->id }}" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addToCartModalLabel-{{ $item->id }}">Add to Cart</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="{{ route('cart.add', $item->id) }}" method="POST">
+                    @csrf
+                    <div class="form-group">
+                        <label for="quantity-{{ $item->id }}">Quantity</label>
+                        <input type="number" class="form-control" id="quantity-{{ $item->id }}" name="quantity" min="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="note-{{ $item->id }}">Notes</label>
+                        <textarea class="form-control" id="note-{{ $item->id }}" name="note"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary mt-3">Add to Cart</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+@endforeach
         
     <!-- JavaScript Libraries -->
  
