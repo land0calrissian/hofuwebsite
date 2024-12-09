@@ -6,7 +6,7 @@
             <h1 class="text-center text-white display-6">Cart</h1>
            
         </div>
-<div class="container">
+<div class="container pt-3">
     <div id="alert-placeholder"></div>
     @if (session('success'))
         <div class="alert alert-success">
@@ -20,7 +20,7 @@
     @endif
     @if (count($cartItems) > 0)
       <div class="container-fluid py-5">
-            <div class="container py-5">
+            <div class="container">
                 <div class="table-responsive">
                     <table class="table">
                         <thead>
@@ -88,8 +88,31 @@
                         </tbody>
                     </table>
                 </div>
+                 <div class="mt-5 d-flex justify-content-between">
+                    <form id="referral-form" action="{{ route('cart.applyReferral') }}" method="POST" class="form-inline">
+                      @csrf
+                        <input type="text" class="border-0 border-bottom rounded me-5 py-3 mb-4 form-control" placeholder="Referral Code" id="referral_code" name="referral_code">
+                        <button type="submit" class="btn border-secondary rounded-pill px-4 py-3 text-primary" type="button">Apply Referral</button>
+                    </form>
+                    @if (session()->has('referral_user_id'))
+                        
+                        <form action="{{ route('cart.removeDiscount') }}" method="POST" class="mt-3">
+                            @csrf
+                            <p class="mb-2">Referral applied: {{ $referralUser->name }}</p>
+                            <button type="submit" class="btn btn-danger">Remove Referral</button>
+                        </form>
+                    @endif
+                </div>
+                @else
+                <div class="container-fluid py-5">
+                    <div class="container ">
+                        <div class="text-center">
+                            <h1 class="fs-6 mb-3">Your cart is empty</h1>
+                            <a href="{{ route('dashboard') }}" class="btn btn-primary">Go to Home</a>
+                        </div>
+                    </div>
                 @endif
-                
+               
                 <div class="row g-4 justify-content-end">
                     <div class="col-8"></div>
                     <div class="col-sm-8 col-md-7 col-lg-6 col-xl-4">
@@ -98,20 +121,11 @@
                                 <h1 class="display-6 mb-4">Cart <span class="fw-normal">Total</span></h1>
                                 <div class="d-flex justify-content-between mb-4">
                                     <h5 class="mb-0 me-4">Subtotal:</h5>
-                                    <p class="mb-0">Total: Rp <span id="total-price">{{ number_format($cartItems->sum(function($cartItem) { return $cartItem->item->price * $cartItem->quantity; }), 0, ',', '.') }}</span></p>
+                                    <p class="mb-0">Total: Rp <span id="total-price">{{ number_format(session('discounted_total', $cartItems->sum(function($cartItem) { return $cartItem->item->price * $cartItem->quantity; })), 0, ',', '.') }}</p>
                                 </div>
-                                {{-- <div class="d-flex justify-content-between">
-                                    <h5 class="mb-0 me-4">Shipping</h5>
-                                    <div class="">
-                                        <p class="mb-0">Flat rate: $3.00</p>
-                                    </div>
-                                </div>
-                                <p class="mb-0 text-end">Shipping to Ukraine.</p> --}}
+                            
                             </div>
-                            {{-- <div class="py-4 mb-4 border-top border-bottom d-flex justify-content-between">
-                                <h5 class="mb-0 ps-4 me-4">Total</h5>
-                                <p class="mb-0 pe-4">$99.00</p>
-                            </div> --}}
+                         
                             <form action="{{ route('order.create') }}" method="POST">
                                 @csrf
                             <button class="btn border-secondary rounded-pill px-4 py-3 text-primary text-uppercase mb-4 ms-4" type="submit">Proceed Checkout</button>

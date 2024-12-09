@@ -9,6 +9,7 @@ use App\Models\OrderItem;
 use App\Models\Cart;
 use App\Models\User;
 use Carbon\Carbon;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class OrderController extends Controller
 {
@@ -54,14 +55,9 @@ class OrderController extends Controller
         }
 
 
-        if (session()->has('discounted_total')) {
-            $totalPrice = session('discounted_total');
-        } else {
-            // Calculate total price
-            $totalPrice = $cartItems->sum(function($cartItem) {
-                return $cartItem->item->price * $cartItem->quantity;
-            });
-        }
+
+        $totalPrice = session('discounted_total');
+       
      
 
         // Create a new order
@@ -80,6 +76,15 @@ class OrderController extends Controller
                 'note' => $cartItem->note,
                 //'price' => $cartItem->item->price,
             ]);
+        }
+        if (session()->has('referral_user_id')) {
+            $referralUser = User::find(session('referral_user_id'));
+            if ($referralUser) {
+                $referralUser->increment('referral_points');
+            }
+    
+            // Clear the referral data from the session
+            session()->forget(['discounted_total', 'referral_user_id']);
         }
         
         // Clear the cart
@@ -107,4 +112,22 @@ class OrderController extends Controller
         $order->delete();
         return redirect()->route('order.index')->with('success', 'Order deleted successfully.');
     }
+    public function generateMonthlyReport(Request $request)
+    {
+        $month = $request->input('month');
+        
+        if ($month){
+            $orders = Order::with('items.item')
+            ->whereMonth('created_at', Carbon::parse($month)->month)
+            ->whereYear('created_at', Carbon::parse($month)->year)
+            ->get();
+            if ($orders->isEmpty()) {
+                return redirect()->route('order.index')->with('error', 'No orders found for the selected month.');
+            }
+            $pdf = PDF::loadView('monthly_report', compact('orders', 'month'));
+            return $pdf->download('monthly_report.pdf');
+        }
+        return redirect()->route('order.index')->with('error', 'Please select a month to generate the report.');
+        
+    } 
 }

@@ -29,6 +29,10 @@
                 <button type="submit" class="btn btn-primary">Search by ID</button>
             </div>
     </form>
+    <form action="{{ route('orders.monthlyReport') }}" method="GET" class="mt-3">
+        <input type="hidden" name="month" value="{{ request('month') }}">
+        <button type="submit" class="btn btn-secondary">Generate Monthly Report PDF</button>
+    </form>
         @endif
 </div>
 <div class="container mt-3">
@@ -53,7 +57,7 @@
                         </li>
                     @endforeach
                 </ul>
-                <p class="mt-2"><strong>Total:</strong> Rp{{ number_format($order->items->sum(function($orderItem) { return $orderItem->item->price * $orderItem->quantity; }), 0, ',', '.') }}</p>
+                <p class="mt-2"><strong>Total:</strong> Rp{{ number_format($order->total_price, 0, ',', '.') }}</p>
                 <p class="mt-2"><strong>Status: </strong> {{ $order->status == 0 ? 'Not Paid' : 'Paid' }}</p>
                  @if (auth()->user()->role == 2)
                  

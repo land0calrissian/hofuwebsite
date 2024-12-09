@@ -9,6 +9,8 @@ use App\Http\Controllers\OrderController;
 
 
 Route::get('/', [ItemController::class, 'dashboard'])->name('dashboard');
+Route::post('/cart/applyReferral', [CartController::class, 'applyReferral'])->name('cart.applyReferral');
+Route::post('/cart/remove-discount', [CartController::class, 'removeDiscount'])->name('cart.removeDiscount');
 
 Route::middleware('auth')->group(function () {
     
@@ -25,6 +27,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/order/create', [OrderController::class, 'create'])->name('order.create');
     Route::patch('/order/updateStatus/{order}', [OrderController::class, 'updateStatus'])->name('order.updateStatus');
     Route::delete('/order/{order}', [OrderController::class, 'destroy'])->name('order.destroy');
+
+    Route::get('/orders/monthly-report', [OrderController::class, 'generateMonthlyReport'])->name('orders.monthlyReport');
     
     Route::patch('/items/{id}/updateStatus', [ItemController::class, 'updateStatus'])->name('items.updateStatus');
 });
